@@ -1,67 +1,65 @@
-Telegram Post Bot
+# 🚀 Telegram post submission bot
 
-A WordPress plugin to submit posts via Telegram. This is a starter template for demonstration purposes and is free to use. Proceed with caution if using it in production environments.
+Submit WordPress posts directly via Telegram! This plugin enables authorized Telegram users to create WordPress posts step-by-step through a simple chatbot interface. More information https://omidakhavan.blog/front-end-wordpress-submission-telegram-bot/
 
-Features
+---
 
-Receive and process messages from Telegram
+### 🧩 Features
 
-Authenticate users before accepting post submissions
+- **Interactive Telegram session flow** for creating WordPress posts.
+- **Step-by-step wizard**: title → tags → category → content → publish.
+- **Only authorized Telegram user IDs** can submit posts.
+- Posts are saved as **draft** for editorial control.
+- New categories are **automatically created** if they don’t exist.
+- Smart **keyboard menu** for `/post`, `/endsession`, and `/start`.
 
-Create WordPress posts from Telegram messages
+---
 
-Supports post title, tags, category, and content submission
+### 📦 Installation
 
-Getting Started
-
-Clone the Repository
-
-git clone https://github.com/yourusername/Telegram-Post-Bot.git
-cd Telegram-Post-Bot
-
-Install Dependencies
-
-Make sure you have Composer installed, then run:
-
-composer install
-
-Create the .env File
-
-Duplicate the .env.example file and set up your bot credentials:
-
-cp .env.example .env
-
-Edit .env and add:
+1. Clone or download the plugin into your `wp-content/plugins/` directory.
+2. Run `composer install` to load dependencies.
+3. Create a `.env` file in the plugin root:
 
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token
-TELEGRAM_AUTHORIZED_USERS=your_telegram_user_id (comma-separated for multiple users)
 
-Activate the Plugin
+TELEGRAM_AUTHORIZED_USERS=12345678,87654321
 
-Copy the Telegram-Post-Bot folder into your WordPress wp-content/plugins/ directory.
+4. Activate the plugin in WordPress admin.
+5. Set your Telegram bot webhook to the REST endpoint:
+https://your-site.com/wp-json/telegram/v1/webhook/
 
-Activate it from the WordPress admin panel under Plugins.
+---
 
-Setting Up the Webhook
+### 🧪 How It Works
 
-Set up your Telegram bot webhook to point to your WordPress REST API:
+Once the bot receives `/start` from an authorized user:
+1. It shows a custom keyboard with `/post` and `/endsession`.
+2. The user is prompted step-by-step to enter:
+   - **Title**
+   - **Tags**
+   - **Category**
+   - **Content**
+3. When the user types `publish`, the plugin:
+   - Validates the inputs.
+   - Inserts a new WordPress post as **draft**.
+   - Sends back the permalink.
+   - Clears the session (via transient).
 
-https://yourwebsite.com/wp-json/telegram/v1/webhook/
+---
 
-Use the following command to set the webhook:
+### 🔒 Security
 
-curl -X POST "https://api.telegram.org/botYOUR_BOT_TOKEN/setWebhook?url=https://yourwebsite.com/wp-json/telegram/v1/webhook/"
+- Only user IDs listed in `TELEGRAM_AUTHORIZED_USERS` can use the bot.
+- Inputs are sanitized using WordPress-native functions.
+- No persistent sessions — uses transients with a 1-hour expiration.
 
-Usage
+---
 
-Start a chat with your bot and send /start to initiate the process.
+### 🛠️ Requirements
 
-Follow the prompts to submit a post.
-
-Posts will be saved as drafts in WordPress.
-
-Notes
-
-This is a starter template for demonstration and testing purposes. Ensure proper security measures before using it in production environments.
-
-For more details, check out the full guide on my blog.
+- **PHP**: 8.0.2+
+- **WordPress**: 5.8+
+- Composer dependencies:
+  - `irazasyed/telegram-bot-sdk`
+  - `vlucas/phpdotenv`
